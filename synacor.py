@@ -32,7 +32,7 @@ class Synacor:
         while 0 <= self.ip <= 0xffff:
             opcode = self.mem[self.ip]
             op, c = self.ops[opcode]
-            args = [ self.mem[offset] for offset in range(self.ip+1, self.ip+c+1)]
+            args = [self.mem[offset] for offset in range(self.ip+1, self.ip+c+1)]
             #print(
             #    '{:08x}'.format(self.reg['ip']),
             #    op.__name__[3:],

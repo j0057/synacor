@@ -4,6 +4,14 @@ import array
 import sys
 import argparse
 
+# 0000 : intro message
+# 015b : self-test
+# 0375 : call routine #1 (once)
+# 06bb : routine 06bb (once)
+# 06cb :   call routine 084d
+# 06d0 :   call routine 084d
+# 084d : routine 084d (48187 times)
+
 def opcode(c):
     def opcode(f):
         f.opcode = c

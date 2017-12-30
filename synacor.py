@@ -55,10 +55,14 @@ class Synacor:
             try:
                 op, c = self.ops[self.mem[ip]]
                 args = ['{0:04x}'.format(self.mem[offset]) for offset in range(ip+1, ip+c+1)]
-                print('{0:08x} {1:<4s} {2}'.format(ip, op.__name__[3:], ' '.join(args)))
+                print('{0:04x}  {1:<4s}  {2:<14s}  {3}'.format(
+                    ip,
+                    op.__name__[3:],
+                    ' '.join(args),
+                    '' if op != self.op_out else repr(chr(self[self.mem[ip+1]]))))
                 ip += 1+c
             except KeyError:
-                print('{0:08x} {1:<4s} {2:04x}'.format(ip, 'dw', self.mem[ip]))
+                print('{0:04x}  {1:<4s}  {2:04x}'.format(ip, 'dw', self.mem[ip]))
                 ip += 1
 
     def __getitem__(self, k):

@@ -1,0 +1,59 @@
+digraph G {
+    rankdir=BT;
+
+    node [fontname=arial shape=box margin="0.05,0.05" width=0 height=0];
+    edge [fontname=arial fontsize=8];
+
+    foothills_1 [style=bold];
+    eaten_by_grue [style=bold];
+
+    foothills_1 -> foothills_2 [label=south];
+    foothills_1 -> dark_cave_1 [label=doorway];
+
+    foothills_2 -> foothills_1 [label=north];
+
+    dark_cave_1 -> foothills_1 [label=south];
+    dark_cave_1 -> dark_cave_2 [label=north];
+
+    dark_cave_2 -> dark_cave_1 [label=south];
+    dark_cave_2 -> dark_cave_3 [label=north];
+
+    dark_cave_3 -> rope_bridge_1 [label=bridge];
+    dark_cave_3 -> dark_cave_2 [label=south];
+
+    rope_bridge_1 -> dark_cave_3 [label=back];
+    rope_bridge_1 -> falling [label=continue];
+
+    falling -> moss_cavern_1 [label=down];
+
+    moss_cavern_1 -> moss_cavern_2 [label=east];
+    moss_cavern_1 -> moss_cavern_3 [label=west];
+
+    moss_cavern_2 -> moss_cavern_1 [label=west];
+
+    moss_cavern_3 -> moss_cavern_1 [label=east];
+    moss_cavern_3 -> passage_1 [label=passage];
+
+    passage_1 -> moss_cavern_3 [label=cavern];
+    passage_1 -> twisty_passages_1 [label=ladder];
+    passage_1 -> passage_2 [label=darkness];
+
+    passage_2 -> passage_1 [label=back];
+    passage_2 -> fumbling_1 [label=continue];
+
+    fumbling_1 -> f1_f [label=forward];
+    fumbling_1 -> fumbling_2 [label=back];
+
+    fumbling_2 -> panic_lost_1 [label=run];
+    fumbling_2 -> f2_i [label=investigate];
+
+    panic_lost_1 -> eaten_by_grue [label=run];
+    panic_lost_1 -> pl1_w [label=wait];
+    panic_lost_1 -> pl1_h [label=hide];
+
+    twisty_passages_1 -> passage_1 [label=ladder];
+    twisty_passages_1 -> tp1_n [label=north];
+    twisty_passages_1 -> tp1_e [label=east];
+    twisty_passages_1 -> tp1_s [label=south];
+    twisty_passages_1 -> tp1_w [label=west];
+}

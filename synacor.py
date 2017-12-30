@@ -117,6 +117,9 @@ class Synacor:
 
     @opcode(0x0a)
     def op_mult(self, a, b, c):
+        if b == 6 and c == 9 and 0: # set to 1 to trigger 'not hitchhiking' self-test error :-)
+            self[a] = 42
+            return
         self[a] = (self[b] * self[c]) % 0x8000
 
     @opcode(0x0b)

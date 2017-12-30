@@ -13,7 +13,7 @@ def opcode(c):
 class Synacor:
     def __init__(self, filename):
         self.mem = self.load(filename)
-        self.reg = {x: 0 for x in range(0x8000, 0x8008+1)}
+        self.reg = {x: 0 for x in range(0x8000, 0x8008)}
         self.ip = 0
         self.stack = []
         self.ops = {f.__func__.opcode: (f, f.__func__.__code__.co_argcount-1)
@@ -40,7 +40,7 @@ class Synacor:
                     self.ip,
                     op.__name__[3:],
                     ' '.join('{:04x}'.format(a) for a in args),
-                    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008+1)))
+                    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008)))
                 ), file=sys.stderr)
             self.ip = next_ip if next_ip is not None else self.ip+c+1
 
@@ -64,7 +64,7 @@ class Synacor:
         return self.reg.get(k, k)
 
     def __setitem__(self, k, v):
-        if not (0x8000 <= k <= 0x8008):
+        if not (0x8000 <= k < 0x8008):
             raise ValueError('invalid register {:04x}'.format(k))
         self.reg[k] = v
 

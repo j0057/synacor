@@ -19,6 +19,7 @@ class Synacor:
         self.ops = {f.__func__.opcode: (f, f.__func__.__code__.co_argcount-1)
                     for f in [getattr(self, k) for k in dir(self)]
                     if hasattr(f, '__func__') and hasattr(f.__func__, 'opcode')}
+        self.debug_level = 0
 
     @staticmethod
     def load(filename):
@@ -33,13 +34,14 @@ class Synacor:
             opcode = self.mem[self.ip]
             op, c = self.ops[opcode]
             args = [self.mem[offset] for offset in range(self.ip+1, self.ip+c+1)]
-            #print(
-            #    '{:08x}'.format(self.reg['ip']),
-            #    op.__name__[3:],
-            #    ' '.join('{:04x}'.format(a) for a in args),
-            #    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008+1))),
-            #    file=sys.stderr)
             next_ip = op(*args)
+            if self.debug_level > 0:
+                print('{0:04x}  {1:<4s}  {2:<14s}  {3}'.format(
+                    self.ip,
+                    op.__name__[3:],
+                    ' '.join('{:04x}'.format(a) for a in args),
+                    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008+1)))
+                ), file=sys.stderr)
             self.ip = next_ip if next_ip is not None else self.ip+c+1
 
     def dump_memory(self):
@@ -170,6 +172,7 @@ def test_load_file_2(): assert len(load('challenge.bin')) == 65535
 def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help='the .bin file to load')
+    parser.add_argument('--debug', '-d', action='count', help='debug level')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--dump', action='store_true', help='output memory dump')
     group.add_argument('--disasm', action='store_true', help='output disassembly')
@@ -178,6 +181,7 @@ def parse_args(args):
 def main(args):
     args = parse_args(args)
     synacor = Synacor(args.filename)
+    synacor.debug_level = args.debug
     if args.dump:
         synacor.dump_memory()
     elif args.disasm:

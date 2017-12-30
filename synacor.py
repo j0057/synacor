@@ -183,7 +183,7 @@ def test_load_file_2(): assert len(load('challenge.bin')) == 65535
 def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help='the .bin file to load')
-    parser.add_argument('--debug', '-d', action='count', help='debug level')
+    parser.add_argument('--debug', '-d', action='count', default=0, help='debug level')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--dump', action='store_true', help='output memory dump')
     group.add_argument('--disasm', action='store_true', help='output disassembly')

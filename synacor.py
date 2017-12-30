@@ -36,12 +36,13 @@ class Synacor:
             args = [self.mem[offset] for offset in range(self.ip+1, self.ip+c+1)]
             next_ip = op(*args)
             if self.debug_level > 0:
-                print('{0:04x}  {1:<4s}  {2:<14s}  {3}'.format(
+                print('{0:04x}  {1:<4s}  {2:<14s}  {3}  {4}'.format(
                     self.ip,
                     op.__name__[3:],
                     ' '.join('{:04x}'.format(a) for a in args),
-                    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008)))
-                ), file=sys.stderr)
+                    ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008))),
+                    '' if op != self.op_out else repr(chr(self[self.mem[self.ip+1]]))
+                ), file=sys.stderr, flush=True)
             self.ip = next_ip if next_ip is not None else self.ip+c+1
 
     def dump_memory(self):

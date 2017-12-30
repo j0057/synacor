@@ -164,7 +164,10 @@ class Synacor:
 
     @opcode(0x14)
     def op_in(self, a):
-        self[a] = ord(sys.stdin.read(1))
+        c = sys.stdin.read(1)
+        if not c:
+            return -1
+        self[a] = ord(c)
 
     @opcode(0x15)
     def op_noop(self):

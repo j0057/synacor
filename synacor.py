@@ -2,6 +2,7 @@
 
 import array
 import sys
+import argparse
 
 def opcode(c):
     def opcode(f):
@@ -166,13 +167,23 @@ def test_load_file_2(): assert len(load('challenge.bin')) == 65535
 
 #---
 
-if __name__ == '__main__':
-    if sys.argv[1] == '--dump':
-        S = Synacor(sys.argv[2])
-        S.dump_memory()
-    elif sys.argv[1] == '--disasm':
-        S = Synacor(sys.argv[2])
-        S.disassemble()
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help='the .bin file to load')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--dump', action='store_true', help='output memory dump')
+    group.add_argument('--disasm', action='store_true', help='output disassembly')
+    return parser.parse_args(args)
+
+def main(args):
+    args = parse_args(args)
+    synacor = Synacor(args.filename)
+    if args.dump:
+        synacor.dump_memory()
+    elif args.disasm:
+        synacor.disassemble()
     else:
-        S = Synacor(sys.argv[1])
-        S.run()
+        synacor.run()
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

@@ -37,8 +37,10 @@ class Synacor:
         memory.extend([0] * (0xffff-len(memory)))
         return memory
 
-    def run(self):
+    def run(self, break_at=None):
         while 0 <= self.ip <= 0xffff:
+            if break_at is not None and self.ip == break_at:
+                break
             opcode = self.mem[self.ip]
             op, c = self.ops[opcode]
             args = [self.mem[offset] for offset in range(self.ip+1, self.ip+c+1)]
@@ -192,6 +194,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('filename', help='the .bin file to load')
     parser.add_argument('--debug', '-d', action='count', default=0, help='debug level')
+    parser.add_argument('--breakpoint', action='store', default=None, help='break at hexadecimal address')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--dump', action='store_true', help='output memory dump')
     group.add_argument('--disasm', action='store_true', help='output disassembly')
@@ -201,6 +204,8 @@ def main(args):
     args = parse_args(args)
     synacor = Synacor(args.filename)
     synacor.debug_level = args.debug
+    if args.breakpoint is not None:
+        synacor.run(break_at=int(args.breakpoint, 16))
     if args.dump:
         synacor.dump_memory()
     elif args.disasm:

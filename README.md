@@ -59,3 +59,12 @@ These are the codes and where/how I found them:
 2. *RTpCEKDxvICs* - from the intro message
 3. *euAPXBMMORJj* - completion of the self-test
 4. *MijBfgCMdHFe* - from the tablet in the foothills
+5. *dqEiLlHwactH* - from the twisty little maze of passages, all alike
+6. *MIwLffGealdt* - from the teleporter
+7. *TfTWmqpRlMsk* - from the hacked teleporter
+8. *VUuYHqI8IlHX* - from the mirror
+
+    ./synacor.py --poke '0209 0001 8007 0001' '156b 0001 8000 0001 0001 8001 0004' -- challenge.bin <dungeon.txt
+
+    >>> [(a,b,c,d,e) for (a,b,c,d,e) in itertools.permutations([2,3,5,7,9]) if a+b*c**2+d**3-e==399]
+    [(9, 2, 5, 7, 3)]

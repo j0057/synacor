@@ -4,9 +4,21 @@ digraph G {
     node [fontname=arial shape=box margin="0.05,0.05" width=0 height=0];
     edge [fontname=arial fontsize=8];
 
+    /* start/end states */
     foothills_1 [style=bold];
     eaten_by_grue [style=bold];
 
+    /* items */
+    tablet [fontsize=8 shape=none];
+    empty_lantern [fontsize=8 shape=none];
+    can [fontsize=8 shape=none];
+
+    /* item edges */
+    tablet -> foothills_1 [style=dotted arrowhead=none];
+    empty_lantern -> moss_cavern_2 [style=dotted arrowhead=none];
+    can -> twisty_mtlpaa [style=dotted arrowhead=none];
+
+    /* room transitions */
     foothills_1 -> foothills_2 [label=south];
     foothills_1 -> dark_cave_1 [label=doorway];
 
@@ -35,25 +47,53 @@ digraph G {
     moss_cavern_3 -> passage_1 [label=passage];
 
     passage_1 -> moss_cavern_3 [label=cavern];
-    passage_1 -> twisty_passages_1 [label=ladder];
+    passage_1 -> twisty_mtlpa [label=ladder];
     passage_1 -> passage_2 [label=darkness];
 
     passage_2 -> passage_1 [label=back];
     passage_2 -> fumbling_1 [label=continue];
 
-    fumbling_1 -> f1_f [label=forward];
+    fumbling_1 -> fumbling_2 [label=forward];
     fumbling_1 -> fumbling_2 [label=back];
 
     fumbling_2 -> panic_lost_1 [label=run];
-    fumbling_2 -> f2_i [label=investigate];
+    fumbling_2 -> panic_lost_1 [label=investigate];
 
     panic_lost_1 -> eaten_by_grue [label=run];
-    panic_lost_1 -> pl1_w [label=wait];
-    panic_lost_1 -> pl1_h [label=hide];
+    panic_lost_1 -> eaten_by_grue [label=wait];
+    panic_lost_1 -> eaten_by_grue [label=hide];
 
-    twisty_passages_1 -> passage_1 [label=ladder];
-    twisty_passages_1 -> tp1_n [label=north];
-    twisty_passages_1 -> tp1_e [label=east];
-    twisty_passages_1 -> tp1_s [label=south];
-    twisty_passages_1 -> tp1_w [label=west];
+    twisty_mtlpa -> passage_1 [label=ladder];
+    twisty_mtlpa -> twisty_tmlpaa [label=north];
+    twisty_mtlpa -> twisty_malpat [label=east];
+    twisty_mtlpa -> twisty_mltpaa [label=south];
+    twisty_mtlpa -> twisty_lmtpaa [label=west];
+
+    twisty_tmlpaa -> twisty_mltpaa [label=north];
+    twisty_tmlpaa -> twisty_mtlpa [label=south];
+    twisty_tmlpaa -> twisty_tmlpaa [label=west];
+
+    twisty_malpat -> twisty_matpal [label=north];
+    twisty_malpat -> twisty_malpat [label=south];
+    twisty_malpat -> twisty_mtlpa [label=west];
+    twisty_malpat -> fumbling_1 [label=east];
+
+    twisty_mltpaa -> twisty_mtlpa [label=north];
+    twisty_mltpaa -> twisty_tmlpaa [label=south];
+    twisty_mltpaa -> twisty_mltpaa [label=east];
+
+    twisty_lmtpaa -> twisty_lmtpaa [label=north];
+    twisty_lmtpaa -> twisty_talpam [label=south];
+    twisty_lmtpaa -> twisty_mtlpa [label=east];
+
+    twisty_matpal -> twisty_mltpaa [label=north];
+    twisty_matpal -> twisty_tmlpaa [label=east];
+    twisty_matpal -> twisty_matpal [label=south];
+
+    twisty_talpam -> twisty_mtlpaa [label=north];
+    twisty_talpam -> twisty_tmlpaa [label=south];
+    twisty_talpam -> twisty_mtlpa [label=west];
+    twisty_talpam -> fumbling_1 [label=east];
+
+    twisty_mtlpaa -> "???" [label=west];
 }

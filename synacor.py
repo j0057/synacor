@@ -7,10 +7,30 @@ import argparse
 # 0000 : intro message
 # 015b : self-test
 # 0375 : call routine #1 (once)
+# 05b2 : routine 05b2 - reads word at [8000], calls [8001]
+# 05fb : routine 05fb - outputs text
 # 06bb : routine 06bb (once)
 # 06cb :   call routine 084d
 # 06d0 :   call routine 084d
-# 084d : routine 084d (48187 times)
+# 0706 : in op for prompt
+# 084d : routine 084d (48187 times) (decryption?)
+# 154b : check for hacked H register
+# 154e : text announcing that confirmation routine is starting
+# 155e :   call routine 05b2
+# 1566 :   5 NOPs
+# 156b :   2 SETs to 8000 and 8001 -> set to 1,4
+# 1571 :   call to mega-recursive confirmation routine
+# 1573 :   check that 8000==6
+# 158a :   call routine 05b2
+# 158c :   do something with 8007!
+# 15a0 :   call routine 0731
+# 15e3 :   jump to function epilogue
+# 1652 :   three POP's and a RET
+# 178b : mega-recursive confirmation routine (it's not Ackermann is it?)
+#           (that's the most evilly recursive function I know, anyhow)
+#           (i'll just bet that it is! >_<)
+#           A(1,4)==6
+#           A(4,1)==65533=0xfffd
 
 def opcode(c):
     def opcode(f):
@@ -52,7 +72,7 @@ class Synacor:
                     ' '.join('{:04x}'.format(a) for a in args),
                     ' '.join('{}={:04x}'.format(k, self.reg[v]) for (k, v) in zip('abcdefgh', range(0x8000, 0x8008))),
                     '' if op != self.op_out else repr(chr(self[self.mem[self.ip+1]]))
-                ), file=sys.stderr, flush=True)
+                ), file=sys.stderr, flush=False)
             self.ip = next_ip if next_ip is not None else self.ip+c+1
 
     def dump_memory(self):
@@ -72,8 +92,16 @@ class Synacor:
                     '' if op != self.op_out else repr(chr(self[self.mem[ip+1]]))))
                 ip += 1+c
             except KeyError:
-                print('{0:04x}  {1:<4s}  {2:04x}'.format(ip, 'dw', self.mem[ip]))
+                print('{0:04x}  {1:<4s}  {2:04x}  {3}'.format(
+                    ip,
+                    'dw',
+                    self.mem[ip],
+                    repr(chr(self.mem[ip])) if 32 <= self.mem[ip] < 128 else ''))
                 ip += 1
+
+    def poke(self, offset, *values):
+        for (i, v) in enumerate(values):
+            self.mem[offset+i] = v
 
     def __getitem__(self, k):
         return self.reg.get(k, k)
@@ -195,15 +223,21 @@ def parse_args(args):
     parser.add_argument('filename', help='the .bin file to load')
     parser.add_argument('--debug', '-d', action='count', default=0, help='debug level')
     parser.add_argument('--breakpoint', action='store', default=None, help='break at hexadecimal address')
+    parser.add_argument('--poke', action='store', nargs='+', help='hexadecimal numbers, first is address, rest is machine code')
     group = parser.add_mutually_exclusive_group()
+
     group.add_argument('--dump', action='store_true', help='output memory dump')
     group.add_argument('--disasm', action='store_true', help='output disassembly')
     return parser.parse_args(args)
 
 def main(args):
     args = parse_args(args)
+    #print(args)
     synacor = Synacor(args.filename)
     synacor.debug_level = args.debug
+    if args.poke:
+        for values in args.poke:
+            synacor.poke(*[int(x, 16) for x in values.split()])
     if args.breakpoint is not None:
         synacor.run(break_at=int(args.breakpoint, 16))
     if args.dump:
